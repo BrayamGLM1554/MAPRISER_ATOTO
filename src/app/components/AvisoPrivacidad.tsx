@@ -6,6 +6,7 @@ import { ScrollArea } from './ui/scroll-area';
 
 interface AvisoPrivacidadProps {
   onClose: () => void;
+  onAceptar?: () => Promise<void>; // solo se pasa cuando es el flujo de login
 }
 
 interface Section {
@@ -28,15 +29,28 @@ const sections: Section[] = [
   { id: 'section10', title: 'Fecha de Actualización', number: 'X.' },
 ];
 
-export default function AvisoPrivacidad({ onClose }: AvisoPrivacidadProps) {
+export default function AvisoPrivacidad({ onClose, onAceptar }: AvisoPrivacidadProps) {
   const [activeSection, setActiveSection] = useState('intro');
+  const [aceptado, setAceptado] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleAceptar = async () => {
+    if (!onAceptar) return;
+    setLoading(true);
+    try {
+      await onAceptar();
+      onClose();
+    } catch (_) {
+      // el error ya lo maneja authApi con toast
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -53,9 +67,12 @@ export default function AvisoPrivacidad({ onClose }: AvisoPrivacidadProps) {
               <p className="text-sm text-gray-600">Sistema MAPRISER - Municipio de Atotonilco de Tula</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
-            <X className="h-4 w-4" />
-          </Button>
+          {/* Ocultar X si el aviso es obligatorio */}
+          {!onAceptar && (
+            <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <div className="flex flex-1 overflow-hidden">
@@ -85,6 +102,7 @@ export default function AvisoPrivacidad({ onClose }: AvisoPrivacidadProps) {
           {/* Contenido */}
           <ScrollArea className="flex-1">
             <div className="p-8 max-w-4xl mx-auto">
+
               {/* Introducción */}
               <section id="intro" className="mb-12">
                 <div className="text-center mb-8 pb-6 border-b">
@@ -345,11 +363,39 @@ export default function AvisoPrivacidad({ onClose }: AvisoPrivacidadProps) {
               </section>
 
               {/* Footer */}
-              <div className="border-t pt-6 mt-12 text-center">
-                <Button onClick={onClose} className="bg-gray-800 hover:bg-gray-900">
-                  Cerrar
-                </Button>
+              <div className="border-t pt-6 mt-12">
+                {onAceptar && (
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <input
+                      type="checkbox"
+                      id="check-aviso"
+                      checked={aceptado}
+                      onChange={(e) => setAceptado(e.target.checked)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="check-aviso" className="text-sm text-gray-700 cursor-pointer select-none">
+                      He leído y acepto el Aviso de Privacidad
+                    </label>
+                  </div>
+                )}
+                <div className="flex justify-center gap-3">
+                  {!onAceptar && (
+                    <Button onClick={onClose} className="bg-gray-800 hover:bg-gray-900">
+                      Cerrar
+                    </Button>
+                  )}
+                  {onAceptar && (
+                    <Button
+                      onClick={handleAceptar}
+                      disabled={!aceptado || loading}
+                      className="bg-gray-800 hover:bg-gray-900"
+                    >
+                      {loading ? 'Guardando...' : 'Aceptar y continuar'}
+                    </Button>
+                  )}
+                </div>
               </div>
+
             </div>
           </ScrollArea>
         </div>

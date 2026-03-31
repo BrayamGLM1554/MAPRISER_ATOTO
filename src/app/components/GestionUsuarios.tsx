@@ -482,19 +482,13 @@ export function GestionUsuarios({ onVolver }: GestionUsuariosProps) {
                     <SelectContent>
                       {usuarioActual.rol === 'administrador' && (
                         <>
-                          <SelectItem value="Jefe de Area">Jefe de Área</SelectItem>
                           <SelectItem value="Director">Director</SelectItem>
-                          <SelectItem value="Coordinador">Coordinador</SelectItem>
                         </>
                       )}
-                      <SelectItem value="Empleado">Empleado</SelectItem>
-                      <SelectItem value="Operativo">Operativo</SelectItem>
-                      <SelectItem value="Asistente">Asistente</SelectItem>
+                      <SelectItem value="Coordinador">Coordinador</SelectItem>
+                      <SelectItem value="Empleado">Auxiliar Administrativo</SelectItem>
                     </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500">
-                    El rol se asigna automáticamente según el puesto
-                  </p>
+                  </Select>                  
                 </div>
 
                 <div className="space-y-2">

@@ -19,6 +19,7 @@ export interface PerfilUsuario {
   ultimoLogin: string | null;
   loginActual: string;
   createdAt: string;
+  avisoPrivacidadAceptado: boolean;
 }
 
 export interface LoginResponse {
@@ -90,6 +91,21 @@ function setToken(token: string): void {
  */
 export function removeToken(): void {
   localStorage.removeItem('auth_token');
+}
+
+export async function aceptarAviso(): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('No hay token de autenticación');
+
+  const response = await fetchWithTimeout(`${BASE_URL}/auth/aceptar-aviso`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Error al aceptar aviso');
+  }
 }
 
 /**

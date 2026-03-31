@@ -433,8 +433,10 @@ export function CrearDocumentoNuevo({ onVolver }: CrearDocumentoNuevoProps) {
   useEffect(() => {
     const cargarHojasMembreteadas = async () => {
       if (!areaDocumento) { setHojasMembreteadasAPI([]); return; }
-      const tieneAcceso = user.rol === 'administrador' || (user.areasPermitidas && user.areasPermitidas.includes(areaDocumento));
-      if (!tieneAcceso) { setHojasMembreteadasAPI([]); return; }
+const tieneAcceso = 
+  user.rol === 'administrador' || 
+  user.rolApi === 'ADMIN' ||
+  (user.areasPermitidas && user.areasPermitidas.includes(areaDocumento));      if (!tieneAcceso) { setHojasMembreteadasAPI([]); return; }
       setCargandoHojas(true);
       try {
         const response = await getHojasMembreteadasArea(areaDocumento);
@@ -485,15 +487,29 @@ export function CrearDocumentoNuevo({ onVolver }: CrearDocumentoNuevoProps) {
 
   if (!user) return null;
 
-  const areasDisponibles = obtenerAreasDisponibles(user.rol, user.areasPermitidas || []);
-  const areas = areasDisponibles.map(area => area.nombre);
+const areas: string[] = user.rol === 'administrador'
+  ? AREAS_SISTEMA.map(a => a.nombre)
+  : (user.areasPermitidas || []);
+
+const areasDisponibles = AREAS_SISTEMA.filter(a => areas.includes(a.nombre));
+  console.log('🔍 Areas debug:', {
+  userRol: user.rol,           // espera: 'usuario'
+  userRolApi: user.rolApi,     // espera: 'EMPLEADO'  
+  areasPermitidas: user.areasPermitidas, // espera: ['Servicios Públicos']
+  areasDisponibles,            // espera: [{id:'servicios-publicos', nombre:'Servicios Públicos'...}]
+  areas,                       // espera: ['Servicios Públicos']
+  areaDocumento,               // espera: 'Servicios Públicos'
+});
   const sugerencias = ['Solicitud de vacaciones', 'Constancia de empleo', 'Oficio de invitación', 'Memorándum interno'];
 
-  useEffect(() => {
-    if (areasDisponibles.length === 1) setAreaDocumento(areasDisponibles[0].nombre);
-    else if (user.area && areas.includes(user.area)) setAreaDocumento(user.area);
-    else if (areasDisponibles.length > 0 && !areaDocumento) setAreaDocumento(areasDisponibles[0].nombre);
-  }, [areasDisponibles, user.area]);
+useEffect(() => {
+  if (areaDocumento) return;
+  if (areasDisponibles.length > 0) {
+    setAreaDocumento(areasDisponibles[0].nombre);
+  } else if (user.areasPermitidas && user.areasPermitidas.length > 0) {
+    setAreaDocumento(user.areasPermitidas[0]);
+  }
+}, [areasDisponibles, user.areasPermitidas]);
 
   const saveSelection = () => { const sel = window.getSelection(); if (sel && sel.rangeCount > 0) savedRangeRef.current = sel.getRangeAt(0).cloneRange(); };
   const restoreSelectionAndFocus = () => { const target = lastFocusedPageRef.current; if (!target) return; target.focus(); const sel = window.getSelection(); if (sel && savedRangeRef.current) { sel.removeAllRanges(); sel.addRange(savedRangeRef.current); } };

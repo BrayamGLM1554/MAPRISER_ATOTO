@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -14,7 +14,13 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mostrarAviso, setMostrarAviso] = useState(false);
-  const { login } = useAuth();
+  const { login, user, aceptarAviso } = useAuth(); // ✅ traer user y aceptarAviso
+
+  useEffect(() => {
+    if (user && !user.avisoPrivacidadAceptado) {
+      setMostrarAviso(true);
+    }
+  }, [user]);  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +38,9 @@ export function Login() {
       setLoading(false);
     }
   };
+
+  const avisoEsObligatorio = !!user && !user.avisoPrivacidadAceptado;
+
 
   // ELIMINAR usuarios estáticos de prueba
 
@@ -171,9 +180,15 @@ export function Login() {
         </div>
       </Card>
 
-      {/* Modal de Aviso de Privacidad */}
       {mostrarAviso && (
-        <AvisoPrivacidad onClose={() => setMostrarAviso(false)} />
+        <AvisoPrivacidad
+          onClose={() => {
+            // ✅ Si es obligatorio no puede cerrarse sin aceptar
+            if (avisoEsObligatorio) return;
+            setMostrarAviso(false);
+          }}
+          onAceptar={avisoEsObligatorio ? aceptarAviso : undefined}
+        />
       )}
     </div>
   );

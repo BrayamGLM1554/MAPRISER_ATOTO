@@ -72,3 +72,34 @@ export function getAreaInfoPorNombre(nombre: string): AreaInfo | undefined {
 export function getAreaInfoPorId(id: string): AreaInfo | undefined {
   return AREAS_SISTEMA.find(area => area.id === id);
 }
+
+export function obtenerAreasDisponibles(
+  rol: string,
+  areasPermitidas: string[]
+): AreaInfo[] {
+  if (rol === 'administrador' || rol === 'ADMIN') {
+    return AREAS_SISTEMA;
+  }
+  if (!areasPermitidas || areasPermitidas.length === 0) {
+    return [];
+  }
+
+  const normalizar = (s: string) => s.normalize('NFC').trim().toLowerCase();
+  const permitidasNorm = areasPermitidas.map(normalizar);
+
+  // LOG CRÍTICO
+  console.log('🔎 obtenerAreasDisponibles:', {
+    rol,
+    areasPermitidas,
+    permitidasNorm,
+    sistemaNombres: AREAS_SISTEMA.map(a => ({
+      nombre: a.nombre,
+      norm: normalizar(a.nombre),
+      match: permitidasNorm.includes(normalizar(a.nombre))
+    }))
+  });
+
+  return AREAS_SISTEMA.filter(area =>
+    permitidasNorm.includes(normalizar(area.nombre))
+  );
+}
