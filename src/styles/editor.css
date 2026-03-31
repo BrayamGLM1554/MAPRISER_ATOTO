@@ -1,0 +1,309 @@
+/* Estilos para el editor de documentos oficiales */
+
+/* Editor contentEditable */
+[contenteditable] {
+  outline: none;
+}
+
+[contenteditable]:focus {
+  outline: 2px solid transparent;
+}
+
+/* Document Page - Hoja física A4 */
+.document-page {
+  page-break-after: always;
+  page-break-inside: avoid;
+}
+
+/* Membrete Layer - Fondo fijo */
+.membrete-layer {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+/* Content Layer - Texto editable */
+.content-layer {
+  /* Estilos mínimos sin interferir con dirección */
+  white-space: pre-wrap;
+  word-break: break-word;
+  caret-color: black;
+}
+
+/* FORZAR LTR en todos los hijos del editor */
+.content-layer *,
+.content-layer p,
+.content-layer div,
+.content-layer span {
+  direction: ltr;
+}
+
+.content-layer:empty:before {
+  content: 'Escribe aquí o genera un machote con el Generador IA arriba...';
+  color: #9ca3af;
+  font-style: italic;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  direction: ltr;
+}
+
+.content-layer:focus:before {
+  content: '';
+}
+
+/* Responsive para documento */
+@media (max-width: 1023px) {
+  .document-page {
+    max-width: 100% !important;
+    width: 100% !important;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 767px) {
+  .document-page {
+    transform: scale(0.7);
+  }
+}
+
+/* ========================================
+   ESTILOS DE IMPRESIÓN
+   ======================================== */
+
+/* Ocultar elementos en impresión */
+.no-print {
+  display: block;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  /* Configuración de página */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  /* Reset de body para impresión */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    width: 794px !important;
+    height: 1123px !important;
+  }
+
+  /* Ocultar todo excepto el documento */
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Document Page para impresión */
+  .document-page {
+    width: 794px !important;
+    height: 1123px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-after: always;
+    page-break-inside: avoid;
+    position: relative !important;
+    overflow: hidden !important;
+    background: white !important;
+    transform: none !important;
+  }
+
+  /* Membrete layer en impresión - CRÍTICO */
+  .membrete-layer {
+    position: absolute !important;
+    inset: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    z-index: 0 !important;
+  }
+
+  /* Content layer en impresión */
+  .content-layer {
+    position: absolute !important;
+    top: 280px !important;
+    left: 90px !important;
+    right: 90px !important;
+    bottom: 120px !important;
+    z-index: 2 !important;
+    background: transparent !important;
+    overflow: hidden !important;
+    font-family: Georgia, "Times New Roman", Times, serif !important;
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+    color: #000 !important;
+  }
+
+  /* Placeholder no visible en impresión */
+  .content-layer:empty:before {
+    content: '' !important;
+  }
+
+  /* Prevenir ruptura de elementos */
+  p, h1, h2, h3, h4, h5, h6 {
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+
+  /* Asegurar que los colores y fondos se impriman */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Prevenir saltos de página no deseados */
+  .document-page:last-child {
+    page-break-after: auto;
+  }
+}
+
+/* ========================================
+   FIN ESTILOS DE IMPRESIÓN
+   ======================================== */
+
+/* Estilos para el documento oficial */
+.documento-oficial {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+}
+
+.documento-oficial p {
+  margin: 6pt 0;
+}
+
+.documento-oficial strong,
+.documento-oficial b {
+  font-weight: 700;
+}
+
+.documento-oficial em,
+.documento-oficial i {
+  font-style: italic;
+}
+
+.documento-oficial u {
+  text-decoration: underline;
+}
+
+/* Estilos específicos para elementos del documento oficial */
+.texto-centrado {
+  text-align: center;
+}
+
+.texto-justificado {
+  text-align: justify;
+}
+
+.texto-derecha {
+  text-align: right;
+}
+
+.negrita {
+  font-weight: 700;
+}
+
+.cursiva {
+  font-style: italic;
+}
+
+.subrayado {
+  text-decoration: underline;
+}
+
+/* Encabezados institucionales */
+.encabezado-principal {
+  text-align: center;
+  font-weight: 700;
+  font-size: 14pt;
+  margin-bottom: 6pt;
+}
+
+.encabezado-secundario {
+  text-align: center;
+  font-size: 11pt;
+  margin-top: 2px;
+  margin-bottom: 12pt;
+}
+
+.asunto {
+  text-align: center;
+  font-weight: 700;
+  margin-top: 12pt;
+  margin-bottom: 12pt;
+}
+
+.destinatario {
+  margin-left: 0;
+  margin-top: 6pt;
+  margin-bottom: 3pt;
+}
+
+.firma {
+  text-align: center;
+  font-weight: 700;
+  margin-top: 48pt;
+  margin-bottom: 12pt;
+}
+
+.linea-firma {
+  text-align: center;
+  margin-top: 48pt;
+  margin-bottom: 6pt;
+}
+
+.cargo-firmante {
+  text-align: center;
+  margin-top: 3pt;
+  margin-bottom: 3pt;
+}
+
+.ccp {
+  font-size: 10pt;
+  margin-top: 12pt;
+  margin-bottom: 3pt;
+}
+
+/* Interlineado profesional */
+.interlineado-simple {
+  line-height: 1;
+}
+
+.interlineado-medio {
+  line-height: 1.5;
+}
+
+.interlineado-doble {
+  line-height: 2;
+}
+
+/* Scroll suave */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
