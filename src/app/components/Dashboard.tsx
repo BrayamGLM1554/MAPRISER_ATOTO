@@ -187,7 +187,7 @@ export function Dashboard() {
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-12 w-12">
-              {user?.avatar && <AvatarFallback />}
+              {user?.avatar && <AvatarImage src={user.avatar} alt={user?.nombre} />}
               <AvatarFallback className="bg-gradient-to-br from-gray-600 to-gray-700 text-white text-sm font-semibold">
                 {getInitials(user?.nombre || 'Usuario')}
               </AvatarFallback>
