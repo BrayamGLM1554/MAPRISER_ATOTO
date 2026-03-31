@@ -15,7 +15,7 @@ import jsPDF from 'jspdf';
 import { Textarea } from './ui/textarea';
 import { PrintPreviewModal } from './PrintPreviewModal';
 import { Separator } from './ui/separator';
-import membreteImage from 'figma:asset/f486ee75730424b368ebdf6b113e550e2c7acb26.png';
+import membreteImage from '../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png';
 import { AREAS_SISTEMA, obtenerAreasDisponibles } from '../constants/areas';
 import { createMachote, normalizePlaceholders, extractVariablesFromSquareBrackets, getHojasMembreteadasArea, subirHojaMembretada, HojaMembretadaAPI } from '../services/api';
 import { SafeLetterheadImage } from './SafeLetterheadImage';

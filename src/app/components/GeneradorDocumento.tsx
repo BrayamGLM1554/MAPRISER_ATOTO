@@ -39,7 +39,7 @@ import {
 import { Badge } from './ui/badge';
 import { getMachote as apiGetMachote, updateMachote as apiUpdateMachote, deactivateMachote as apiDeactivateMachote, reactivateMachote as apiReactivateMachote, getAreaKey, getHojasMembreteadasArea, HojaMembretadaAPI, createDocumento, updateDocumento, DocumentoAPI } from '../services/api';
 import { nombreAreaAId } from '../utils/areas';
-import membreteImage from 'figma:asset/f486ee75730424b368ebdf6b113e550e2c7acb26.png';
+import membreteImage from '../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png';
 import { SafeLetterheadImage } from './SafeLetterheadImage';
 import { UnifiedDocumentRenderer, HojaMembretada as UnifiedHojaMembretada, formatearTextoPlanoAHTML } from './UnifiedDocumentRenderer';
 import { exportarDocumentoAPDF, generarHTMLImpresion } from '../utils/pdfExport';

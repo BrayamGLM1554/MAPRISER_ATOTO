@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { SafeLetterheadImage } from './SafeLetterheadImage';
-import membreteImage from 'figma:asset/f486ee75730424b368ebdf6b113e550e2c7acb26.png';
+import membreteImage from '../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png';
 import { formatearTextoPlanoAHTML } from './UnifiedDocumentRenderer';
 
 /**
