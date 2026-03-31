@@ -14,14 +14,8 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mostrarAviso, setMostrarAviso] = useState(false);
-  const { login, user, aceptarAviso } = useAuth(); // ✅ traer user y aceptarAviso
-
-  useEffect(() => {
-    if (user && !user.avisoPrivacidadAceptado) {
-      setMostrarAviso(true);
-    }
-  }, [user]);  
-
+  const { login} = useAuth();
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -39,7 +33,6 @@ export function Login() {
     }
   };
 
-  const avisoEsObligatorio = !!user && !user.avisoPrivacidadAceptado;
 
 
   // ELIMINAR usuarios estáticos de prueba
@@ -179,17 +172,6 @@ export function Login() {
           </div>
         </div>
       </Card>
-
-      {mostrarAviso && (
-        <AvisoPrivacidad
-          onClose={() => {
-            // ✅ Si es obligatorio no puede cerrarse sin aceptar
-            if (avisoEsObligatorio) return;
-            setMostrarAviso(false);
-          }}
-          onAceptar={avisoEsObligatorio ? aceptarAviso : undefined}
-        />
-      )}
     </div>
   );
 }

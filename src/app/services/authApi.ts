@@ -6,6 +6,7 @@ const TIMEOUT_MS = 30000; // Aumentado a 30 segundos para cold starts de Render
 export type Rol = 'ADMIN' | 'JEFE_AREA' | 'EMPLEADO' | 'ASISTENTE';
 
 export interface PerfilUsuario {
+  primerIngreso: boolean;
   id: string;
   nombre: string;
   apellidos: string;
@@ -91,6 +92,25 @@ function setToken(token: string): void {
  */
 export function removeToken(): void {
   localStorage.removeItem('auth_token');
+}
+
+export async function cambiarPasswordInicial(nuevaPassword: string): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('No hay token de autenticación');
+
+  const response = await fetchWithTimeout(`${BASE_URL}/auth/cambiar-password-inicial`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ nuevaPassword }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Error al cambiar contraseña');
+  }
 }
 
 export async function aceptarAviso(): Promise<void> {

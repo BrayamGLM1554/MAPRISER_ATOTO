@@ -9,6 +9,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { suppressConsoleErrorsInPreview } from './utils/environment';
 import { initPreviewEnvironment } from './utils/initPreviewEnv';
 import { initErrorRecovery } from './utils/errorRecovery';
+import AvisoPrivacidad from './components/AvisoPrivacidad';
+import CambiarPasswordInicial from './components/CambiarPasswordInicial';
 
 // Inicializar protecciones del entorno Preview lo antes posible
 if (typeof window !== 'undefined') {
@@ -19,7 +21,7 @@ if (typeof window !== 'undefined') {
 
 function AppContent() {
   const auth = useAuth();
-  const { isAuthenticated } = auth || {};
+  const { isAuthenticated, user, aceptarAviso, cambiarPasswordInicial  } = auth || {};
 
   // Suprimir errores de consola en Figma Preview
   useEffect(() => {
@@ -32,9 +34,28 @@ function AppContent() {
     return null;
   }
 
+  const avisosPendiente = isAuthenticated && user && !user.avisoPrivacidadAceptado;
+  const passwordPendiente = isAuthenticated && user && user.avisoPrivacidadAceptado && user.primerIngreso;
+
+
   return (
     <>
       {isAuthenticated ? <Dashboard /> : <Login />}
+
+      {avisosPendiente && (
+        <AvisoPrivacidad
+          onClose={() => {}}     // no-op: no se puede cerrar sin aceptar
+          onAceptar={aceptarAviso}
+        />
+      )}
+
+      {passwordPendiente && (
+        <CambiarPasswordInicial
+          nombreUsuario={user.nombre}
+          onCambiar={cambiarPasswordInicial}
+        />
+      )}
+
       <Toaster position="top-right" richColors />
     </>
   );
