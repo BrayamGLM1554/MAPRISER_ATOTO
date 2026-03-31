@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import hojaMembretadaSecretaria from "figma:asset/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png";
+import hojaMembretadaSecretaria from "../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png";
 import { listMachotes as apiListMachotes, listMisMachotes as apiListMisMachotes, ApiMachote } from '../services/api';
 
 // Context for managing machotes and generated documents
