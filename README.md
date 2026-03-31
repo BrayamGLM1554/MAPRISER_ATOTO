@@ -31,33 +31,6 @@ Aplicación web progresiva (PWA) para uso interno del H. Ayuntamiento de Atotoni
 - Licencias
 - Documentos administrativos
 
-## Usuarios de Ejemplo
-
-### Administrador General
-- **Email:** admin@atotonilco.gob.mx
-- **Contraseña:** admin123
-- **Permisos:** 
-  - Gestionar usuarios, roles y áreas
-  - Administrar todos los machotes del sistema
-  - Crear, editar y eliminar machotes
-  - Ver todos los documentos generados
-
-### Usuario Recursos Humanos
-- **Email:** rh@atotonilco.gob.mx
-- **Contraseña:** rh123
-- **Permisos:**
-  - Acceso solo a machotes de Recursos Humanos
-  - Generar documentos de su área
-  - Ver historial de documentos de su área
-
-### Usuario Tesorería
-- **Email:** tesoreria@atotonilco.gob.mx
-- **Contraseña:** tesoreria123
-- **Permisos:**
-  - Acceso solo a machotes de Secretaría / Tesorería
-  - Generar documentos de su área
-  - Ver historial de documentos de su área
-
 ## Flujo de Trabajo
 
 1. **Inicio de Sesión:** El usuario inicia sesión con sus credenciales
