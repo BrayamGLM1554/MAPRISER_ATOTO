@@ -1,45 +1,30 @@
-/**
- * Componente SafeLetterheadImage
- * Carga de forma segura imágenes de hojas membretadas desde Cloudinary
- * con validación, manejo de errores y fallback
- */
-
 import React, { useState, useEffect } from 'react';
-import membreteImage from '../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png';
 import { AlertCircle } from 'lucide-react';
 
 interface SafeLetterheadImageProps {
   imageUrl?: string;
-  fallbackUrl?: string;
   className?: string;
   style?: React.CSSProperties;
   onError?: (error: string) => void;
   showErrorMessage?: boolean;
 }
 
-/**
- * Validar si una URL apunta a una imagen válida
- * Usa Image nativo para evitar problemas de CORS en HEAD/fetch
- */
 async function validateImageUrl(url: string): Promise<boolean> {
   return new Promise((resolve) => {
     const img = new Image();
     const timeout = setTimeout(() => {
       img.onload = null;
       img.onerror = null;
-      console.warn('⏱ Timeout al validar imagen, usando fallback:', url);
       resolve(false);
     }, 8000);
 
     img.onload = () => {
       clearTimeout(timeout);
-      console.log('✅ URL válida (imagen cargada):', url);
       resolve(true);
     };
 
     img.onerror = () => {
       clearTimeout(timeout);
-      console.warn('⚠️ No se pudo cargar la imagen desde URL:', url);
       resolve(false);
     };
 
@@ -47,106 +32,79 @@ async function validateImageUrl(url: string): Promise<boolean> {
   });
 }
 
-/**
- * Componente que carga imágenes de hojas membretadas de forma segura
- */
 export const SafeLetterheadImage: React.FC<SafeLetterheadImageProps> = ({
   imageUrl,
-  fallbackUrl = membreteImage,
   className = '',
   style = {},
   onError,
   showErrorMessage = false
 }) => {
-  const [currentUrl, setCurrentUrl] = useState<string>(imageUrl || fallbackUrl);
+  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasAttemptedValidation, setHasAttemptedValidation] = useState(false);
 
-  // Validar la URL cuando cambie
   useEffect(() => {
+    // 🔥 SI NO HAY URL → NO RENDERIZAR NADA
     if (!imageUrl) {
-      setCurrentUrl(fallbackUrl);
+      setCurrentUrl(null);
       setError(null);
       return;
     }
 
-    // Si es una URL de Cloudinary con previewUrl, confiar en ella
-    // (el backend ya ha validado que es una imagen)
+    // Cloudinary → confiar directo
     if (imageUrl.includes('cloudinary.com')) {
-      // Si la URL termina en .pdf, algo está mal
       if (imageUrl.toLowerCase().endsWith('.pdf')) {
-        console.error('❌ URL apunta a un PDF, esto no debería pasar. Debe usarse previewUrl');
-        const errorMsg = 'La URL apunta a un PDF en lugar de una imagen de preview';
+        const errorMsg = 'La URL apunta a un PDF en lugar de una imagen';
         setError(errorMsg);
-        setCurrentUrl(fallbackUrl);
+        setCurrentUrl(null);
         onError?.(errorMsg);
         return;
       }
-      
-      // Para URLs de Cloudinary, cargar directamente
-      console.log('✅ Usando URL de Cloudinary:', imageUrl);
+
       setCurrentUrl(imageUrl);
       setError(null);
       return;
     }
 
-    // Para URLs no-Cloudinary, validar antes de cargar
+    // Validación opcional para otras URLs
     if (!hasAttemptedValidation) {
       setIsValidating(true);
       setHasAttemptedValidation(true);
-      
+
       validateImageUrl(imageUrl)
         .then(isValid => {
           if (isValid) {
             setCurrentUrl(imageUrl);
             setError(null);
           } else {
-            const errorMsg = 'URL de imagen no válida o inaccesible';
+            const errorMsg = 'URL de imagen no válida';
             setError(errorMsg);
-            setCurrentUrl(fallbackUrl);
+            setCurrentUrl(null);
             onError?.(errorMsg);
           }
         })
         .catch(err => {
-          const errorMsg = `Error al validar imagen: ${err.message}`;
-          console.error('❌', errorMsg);
+          const errorMsg = `Error al validar imagen`;
           setError(errorMsg);
-          setCurrentUrl(fallbackUrl);
+          setCurrentUrl(null);
           onError?.(errorMsg);
         })
         .finally(() => {
           setIsValidating(false);
         });
     }
-  }, [imageUrl, fallbackUrl, onError, hasAttemptedValidation]);
+  }, [imageUrl, onError, hasAttemptedValidation]);
 
-  // Handler para errores de carga de <img>
-  const handleImageError = (e: React.SyntheticEvent<HTMLDivElement>) => {
-    console.error('❌ Error al cargar imagen de hoja membretada:', imageUrl);
-    const errorMsg = 'Error al cargar imagen de hoja membretada';
+  const handleImageError = () => {
+    const errorMsg = 'Error al cargar imagen';
     setError(errorMsg);
-    setCurrentUrl(fallbackUrl);
+    setCurrentUrl(null);
     onError?.(errorMsg);
   };
 
-  // Si está validando, mostrar un estado de carga suave
-  if (isValidating) {
-    return (
-      <div
-        className={className}
-        style={{
-          ...style,
-          backgroundImage: `url(${fallbackUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.5,
-          transition: 'opacity 0.3s ease',
-        }}
-      />
-    );
-  }
+  // 🔥 SI NO HAY IMAGEN → NO RENDERIZA NADA
+  if (!currentUrl) return null;
 
   return (
     <>
@@ -161,8 +119,7 @@ export const SafeLetterheadImage: React.FC<SafeLetterheadImageProps> = ({
           backgroundRepeat: 'no-repeat',
         }}
       />
-      
-      {/* Mensaje de error opcional */}
+
       {error && showErrorMessage && (
         <div
           style={{

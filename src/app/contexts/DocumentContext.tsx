@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import hojaMembretadaSecretaria from "../../assets/68376b3a9d85d6f4511d93a98d6c2d209148e62e.png";
 import { listMachotes as apiListMachotes, listMisMachotes as apiListMisMachotes, ApiMachote } from '../services/api';
 
 // Context for managing machotes and generated documents
@@ -62,24 +61,7 @@ interface DocumentContextType {
 
 const DocumentContext = createContext<DocumentContextType | undefined>(undefined);
 
-// Catálogo de hojas membretadas por área
-const hojasMembreteadasIniciales: HojaMembretada[] = [
-  {
-    id: 'hm1',
-    nombre: 'Hoja Oficial Secretaría General Municipal',
-    area: 'Secretaría / Tesorería',
-    imagenUrl: hojaMembretadaSecretaria,
-    descripcion: 'Hoja membretada oficial para documentos de Secretaría General Municipal',
-  },
-  // Aquí se pueden agregar más hojas membretadas para otras áreas
-  // {
-  //   id: 'hm2',
-  //   nombre: 'Hoja Oficial Recursos Humanos',
-  //   area: 'Recursos Humanos',
-  //   imagenUrl: hojaMembretadaRH,
-  //   descripcion: 'Hoja membretada oficial para documentos de Recursos Humanos',
-  // },
-];
+
 
 const machotesIniciales: Machote[] = [
   {
@@ -232,7 +214,7 @@ SECRETARIA GENERAL MUNICIPAL.`,
 export function DocumentProvider({ children }: { children: ReactNode }) {
   const [machotes, setMachotes] = useState<Machote[]>(machotesIniciales);
   const [documentosGenerados, setDocumentosGenerados] = useState<DocumentoGenerado[]>([]);
-  const [hojasMembreteadas] = useState<HojaMembretada[]>(hojasMembreteadasIniciales);
+  const [hojasMembreteadas] = useState<HojaMembretada[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Cargar machotes desde la API al iniciar
@@ -353,9 +335,6 @@ export function DocumentProvider({ children }: { children: ReactNode }) {
     return machotes.filter(m => m.area === area);
   };
 
-  const obtenerHojasMembreteadasPorArea = (area: string) => {
-    return hojasMembreteadas.filter(hm => hm.area === area);
-  };
 
   // Obtiene TODOS los machotes disponibles para el área del usuario
   // Endpoint usado: GET /machotes
@@ -419,7 +398,6 @@ export function DocumentProvider({ children }: { children: ReactNode }) {
         eliminarMachote,
         generarDocumento,
         obtenerMachotesPorArea,
-        obtenerHojasMembreteadasPorArea,
         refetchMachotes,
       }}
     >

@@ -139,6 +139,30 @@ async function fetchWithTimeout(
   }
 }
 
+export async function wakeUpServices() {
+  const services = [
+    'https://machotes-guardado.onrender.com/health',
+    'https://login-pwa-atoto.onrender.com/health',
+    'https://extractorpwa.onrender.com',
+    'https://groqq-microservice.onrender.com'
+  ];
+
+  console.log('🔥 Despertando servicios...');
+
+  const requests = services.map(async (url) => {
+    try {
+      await fetch(url, { method: 'GET' });
+      console.log(`✅ Servicio activo: ${url}`);
+    } catch (error) {
+      console.warn(`⚠️ No se pudo despertar: ${url}`);
+    }
+  });
+
+  await Promise.allSettled(requests);
+
+  console.log('🚀 Wake up terminado');
+}
+
 /**
  * Extraer variables únicas del HTML
  * Detecta placeholders con formato {{NombreVariable}}

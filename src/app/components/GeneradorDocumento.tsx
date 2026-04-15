@@ -63,7 +63,7 @@ function detectarFormatoImagen(url: string): string {
 
 export function GeneradorDocumento({ machoteId, onVolver, documentoId, camposIniciales }: GeneradorDocumentoProps) {
   const { user } = useAuth();
-  const { machotes, generarDocumento, editarMachote, obtenerHojasMembreteadasPorArea } = useDocuments();
+  const { machotes, generarDocumento, editarMachote } = useDocuments();
   const machote = machotes.find(m => m.id === machoteId);
 
   const modoEdicion = !!documentoId;
@@ -150,9 +150,11 @@ export function GeneradorDocumento({ machoteId, onVolver, documentoId, camposIni
     }
   }, [contenidoMachoteEditado, modoEditorMachote]);
 
-  const hojasDisponibles = hojasMembreteadasAPI.length > 0
-    ? hojasMembreteadasAPI.map(hoja => ({ id: hoja.id, nombre: hoja.nombre, imagenUrl: hoja.archivo.previewUrl }))
-    : (machote ? obtenerHojasMembreteadasPorArea(machote.area) : []);
+  const hojasDisponibles = (hojasMembreteadasAPI || []).map(hoja => ({
+    id: hoja.id,
+    nombre: hoja.nombre,
+    imagenUrl: hoja.archivo.previewUrl
+  }));
 
   useEffect(() => {
     if (machote) setContenidoMachoteEditado(machote.contenido);
